@@ -1,0 +1,75 @@
+Les Distributions
+Sur son poste de travail
+La grande famille des Debian
+ArchLinux & Cie
+Et sous Mac ?
+Et sous Windows ?
+Sur les serveurs
+Debian
+Redhat & CentOs
+Pour un panel de ce qui se fait actuellement : DistroWatch.com
+
+Sur son poste de travail
+La grande famille des Debian
+Ubuntu & Mint
+
++ Packages plus actuels
+
+- mais réinstallation nécessaire tous les 6 mois
+
+Debian &…​ Mint
+
+Debian est la mère des distributions citées ci-dessus.
+
++ stable
+
++ Upgrade fiable d’une version à une autre
+
+- Un peu moins sexy
+
+- Nécessite un peu plus d’expérience
+
+ArchLinux & Cie
+Archlinux (https://www.archlinux.org)
+
+ArchLinux est une "Rolling distribution", les nouvelles versions de chaque paquet vous parvient dés que son mainteneur l’a intégré avec succès. Le wiki maintenu par la communauté Archlinux est de loin le plus complet et abouti : https://wiki.archlinux.org/.
+Même si vous n’utilisez par Archlinux, avoir son wiki parmis vos favoris vous aidera plus d’une fois dans votre carrière.
+
+Manjaro (https://manjaro.org/)
+
+Manjaro est basée sur Archlinux et propose un envirronement plus simple à appréhender. C’est l’une des distributions les plus appréciées aujourd’hui.
+
+Et sous Mac ?
+C’est possible !
+
+Méthode Linus Thorvald : On install Linux sur un MacBook Air
+
+Ou rester sous MacOs X en utilisant iTerm2, Brew (pour obtenir des Logiciels Libres), Atom
+
+Et sous Windows ?
+Avec Windows 10 il y a maintenant Windows Subsystem for Linux (WSL, dévéloppé en partenariat avec Canonical qui maintient Ubuntu) qui permet d’avoir accès à une ligne de commande sous bash (ou zsh) mais ne vous permet pas de lancer des démons (services) en tâche de fond. L’intérêt est donc limité.
+
+Sur les serveurs
+Pas beaucoup de choix. Les mots d’ordre sont :
+
+Stabilité
+
+Sécurité
+
+Intégration matérielle (capacité du noyau choisi à prendre en charge le matériel du serveur)
+
+Debian
+Debian est la distribution favorite des administrateurs de part sa simplicité et sa stabilité.
+
+Il est rarement nécessaire de rebooter une Debian lors d’une mise à jour de sécurité (sauf si c’est le noyau ou quelques librairies de base qui son concernés).
+
+Le fait de pouvoir upgrader une debian à chaque version majeure sans problème est un gros atout.
+
+Redhat & CentOs
+CentOs est dérivée de Red Hat Enterprise Linux. Elle est maintenue par la communauté et s’appuie sur les sources libres produites par Red Hat.
+
+Le gros avantage de RedHat face à Debian est le support matériel, et le support client proposé par RedHat.
+
+Mais chaque mise à jour de paquet ne redémarre pas forcément les services concernés. Il faut donc souvent rebooter le serveur pour être sûr.
+
+L’upgrade d’une version majeure à une autre n’est souvent pas possible, il faut réinstaller entièrement le serveur. Mais les mises à jour de sécurité sont assurées pour 10 ans à partir de la date de sortie de chaque version majeure.
