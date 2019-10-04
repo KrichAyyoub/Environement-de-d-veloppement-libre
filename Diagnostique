@@ -1,0 +1,79 @@
+Diagnostique
+Diagnotique local
+Hardware
+Applicatif
+Réseau
+Diagnotique local
+Hardware
+Lister les disques de son système :
+
+➜ lsblk
+NAME              MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT
+sda                 8:0    1  14.7G  0 disk
+├─sda1              8:1    1   238K  0 part
+├─sda2              8:2    1   2.8M  0 part
+├─sda3              8:3    1 638.4M  0 part
+└─sda4              8:4    1   300K  0 part
+nvme0n1           259:0    0   477G  0 disk
+└─nvme0n1p1       259:1    0 476.4G  0 part
+  └─cryptroot     254:0    0 476.4G  0 crypt
+    ├─x1vg-lvroot 254:1    0    60G  0 lvm   /
+    ├─x1vg-lvswap 254:2    0    10G  0 lvm   [SWAP]
+    └─x1vg-lvhome 254:3    0 406.4G  0 lvm   /home
+Là j’ai une clé USB de 16Go partitionnée en plusieurs volumes mais non montée, et mon disque dur chiffré monté sur /, /home, et en swap
+
+Lister le matériel de son système :
+
+sudo lshw
+Connaître la disposition de RAM de son système :
+
+➜ sudo lshw -short -C memory
+[sudo] password for eric:
+H/W path       Device          Class          Description
+=========================================================
+/0/3                           memory         8GiB System Memory
+/0/3/0                         memory         4GiB Row of chips LPDDR3 Synchronous Unbuffered
+/0/3/1                         memory         4GiB Row of chips LPDDR3 Synchronous Unbuffered
+/0/7                           memory         128KiB L1 cache
+/0/8                           memory         512KiB L2 cache
+/0/9                           memory         4MiB L3 cache
+/0/b                           memory         128KiB BIOS
+/0/100/1f.2                    memory         Memory controller
+Là j’ai 8Go de RAM réparti sur 2 slots, je n’ai plus de slot de libre (serait indiqué empty)
+
+Applicatif
+Lister ce qui tourne sur le système (sur un système géré par systemd)
+
+$ systemctl status
+Lister ce qui tourne sur un système non géré par systemd
+
+# ps -edf
+Observer la conso CPU et RAM du système par appli
+
+$ htop
+Pour observer les logs du noyaux
+
+$ dmesg
+Observer les logs d’un système géré par systemd
+
+$ journalctl -xe
+Observer les erreurs relevées par systemd
+
+sudo journalctl -p 3 -xb
+Occupation disque
+
+$ df -h
+Réseau
+Connaître son adresse locale
+
+$ ip addr
+Connaître son adresse de sortie (celle par laquelle nous vois un sit web par exemple)
+
+$ curl ifconfig.co
+Connaître les ports ouverts de son système
+
+$ netstat -taupe
+$ ss -atl
+Connaître les ports ouverts d’une machine distante qui porte l’adresse IP 10.0.0.9
+
+$ nmap -P0 10.0.0.9
