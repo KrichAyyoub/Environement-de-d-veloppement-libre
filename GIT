@@ -1,0 +1,146 @@
+Git, Github et GitLab
+Les bases de git
+Configuration de git
+Intéragir avec Github ou GitLab en SSH
+Réécrire l’histoire avec Rebase
+Commandes utiles
+Les bases de git
+Il est inutile de paraphraser ici l’excellent livre consacré à git disponible gratuitement à cette adresse : https://git-scm.com/book/en/v2
+Il est préférable de lire ce livre en anglais, mais il existe une traduction en français à cette adresse : https://git-scm.com/book/fr/v2
+
+Lisez tout particulièrement les chapitres 2.1 et 2.2 pour pouvoir vous débrouiller dans la vie de tous les jours.
+
+Configuration de git
+Voici la configuration minimal de git qui permet d’avoir une expérience plus agréable
+
+Editez votre ~/.gitignore
+
+nogit
+*.swp
+nogit vous permet d’avoir des repértoires dans vos projets dans lesquels vous mettrez tout ce qui n’a pas besoin d'être dans le dépot de source
+*.swp les fichiers temporaires de vim
+
+Editez votre ~/.gitconfig
+
+[user]
+    name = Prenom Nom
+    email = prenom.nom@univ.fr
+
+[color]
+    ui = auto
+
+[alias]
+    lg = log --graph --pretty=tformat:'%Cred%h%Creset -%C(white)%d%Creset %s %Cgreen(%an %ar)%Creset'
+
+[diff]
+    mnemonicPrefix = true
+    wordRegex = .
+    renames = true
+Intéragir avec Github ou GitLab en SSH
+Le moyen le plus simple, et aussi le plus sûr, est d’utiliser sa clef SSH pour s’authentifier sur Github/GitLab et pouvoir y poster le fruit de son labeur.
+
+Suivre ces étapes pour activer sa clef dans GitLab GitLab and SSH keys
+
+Suivre ces étapes pour activer sa clé SSH dans Github : Connecting to GitHub with SSH
+
+ssh-agent
+Si vous avez positionné un mot de passe sur votre clef ssh, vous pouvez utiliser ssh-agent pour ne pas avoir à saisir votre mot de passe à chaque fois.
+
+Si votre envirronement ne lance pas ssh-agent lorsque vous vous loger, ajoutez ces lignes dans votre .zshrc (ou .bashrc).
+
+if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+    ssh-agent > ~/.ssh-agent-thing
+fi
+if [[ "$SSH_AGENT_PID" == "" ]]; then
+    eval "$(<~/.ssh-agent-thing)"
+fi
+Pour savoir si ssh-agent tourne et dispose des bonnes clefs, vous pouvez lancer cette commande
+
+$ ssh-add -l
+Et pour que vos clefs soient automatiquement ajoutée à l’agent, vous pouvez ajouter cette ligne à votre ~/.ssh/config
+
+AddKeysToAgent yes
+Réécrire l’histoire avec Rebase
+git rebase est une commande très puissante qui permet entre autre de réécrire l’histoire d’un dépot (réorganiser les commit, les renommer, les supprimer ou les concaténer).
+
+	Attention, une mauvaise manipulation avec rebase peut détruire des commit
+Faites une sauvegarde de votre dépot git si vous n'êtes pas sûr de vous :
+$ tar zcvf [depot_git].tar.gz [depot_git]
+Voici un exemple où on souhaite concatener 3 commits en un seul.
+
+Si on a un historique comme ceci (du plus récent au plus ancien) :
+
+$ git log --oneline
+2cf434e Ajout fonctionnalité 1
+3961213 Correction README
+9ffae79 Maj README
+ddc48dc Ajout README
+9d7f275 Ajout Licence
+On veut fusionner les 3 commits concernant le README, on doit pour cela travailler sur les 4 derniers commits
+
+$ git rebase -i HEAD~4
+git affiche (notez que cette fois les commits sont triés du plus ancien au plus récent) :
+
+pick ddc48dc Ajout README
+pick 9ffae79 Maj README
+pick 3961213 Correction README
+pick 2cf434e Ajout fonctionnalité 1
+
+# Rebase 9d7f275..2cf434e onto 9d7f275 (4 commands)
+#
+# Commands:
+# p, pick = use commit
+# r, reword = use commit, but edit the commit message
+# e, edit = use commit, but stop for amending
+# s, squash = use commit, but meld into previous commit
+# f, fixup = like "squash", but discard this commit's log message
+# x, exec = run command (the rest of the line) using shell
+# d, drop = remove commit
+...
+On va squasher les commits successifs. On garde le premier et y on fusionne les deux autres. On édite en conséquence et on enregistre :
+
+pick ddc48dc Ajout README
+squash 9ffae79 Maj README
+squash 3961213 Correction README
+pick 2cf434e Ajout fonctionnalité 1
+
+# Rebase 9d7f275..2cf434e onto 9d7f275 (4 commands)
+...
+Là git nous propose d'éditer le message du commit résultant de la fusion des 3 commits
+
+# This is a combination of 3 commits.
+# This is the 1st commit message:
+Ajout README
+
+# This is the commit message #2:
+
+Maj README
+
+# This is the commit message #3:
+
+Correction README
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+J'édite pour avoir un nouveau message
+
+README
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+J’enregistre, le rebase se fait et j’obtiens :
+
+$ git log --oneline
+e494599 Ajout fonctionnalité 1
+bbffc96 README
+9d7f275 Ajout Licence
+Notez bien que le commit Ajout fonctionnalité 1 a changé d’identifiant, cela signifie que l’histoire a bien été réécrite et que si d’autres personnes en ont récupéré l’ancienne version, ils risquent de perdre tout ou partie de leur travail.
+
+A n’utiliser donc que si vous n’avez pas encore poussé ou que si c’est dans une branche qui n’appartient qu'à vous et que vous n’avez pas encore fusionnée dans une autre branche.
+
+Commandes utiles
+Créer une branche distante à partir d’une branche locale
+
+Si on est sur une branche locale qui s’appelle feat-toto faire :
+
+$ git push --set-upstream origin feat-toto
