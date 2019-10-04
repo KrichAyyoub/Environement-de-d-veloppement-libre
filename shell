@@ -1,0 +1,209 @@
+L’outil ultime : le shell
+Quel Shell ?
+Les alias
+Définition d’un alias sous bash
+Définition d’un alias sous zsh
+Les fonctions
+Les scripts shell
+Le chainage de commandes
+le pipe : |
+> et >>
+&& et ||
+Utilitaires adaptés au chaînage
+Les commandes utiles
+Trouver des fichiers
+Chercher dans les contenus des fichiers
+Télécharger ou accéder à une API REST
+Quel Shell ?
+le plus connu : BASH
+
+Le plus abouti : ZSH
+
+Le plus récent : FISH
+
+	La syntaxe de scripting de fish n’est pas du tout compatible avec sh. Bash et Zsh ont quant à eux une racine commune à sh, rendant la recherche d’information plus aisée.
+Les alias
+En bash ou zsh on peut définir des alias ou des fonctions pour faciliter la saisie de commandes fastidieuses
+
+Définition d’un alias sous bash
+Sous bash, il est souvent nécessaire d’ajouter des alias pour êytre plus productif.
+
+Exemple d’un ~/.bash_aliases
+
+alias p='cd ..'
+
+# ps with special/custom display to especially display parent process ID
+# (PPID).
+alias psp='ps axo user,ruser,pid,ppid,args --sort ppid'
+
+# some more ls aliases
+alias ll='ls -l'
+alias la='ls -la'
+lt() {
+    ls -lat $@|head
+}
+
+alias gst='git status --short -b'
+alias gitg='gitg  2>/dev/null &'
+alias git-remove-merged-branches='git branch --no-color --merged | command grep -vE "^(\*|\s*(master|develop|dev)\s*$)" | command xargs -n 1 git branch -d'
+Pour que ce fichier soit effectif, il faut l’ajouter dans son .bashrc
+
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+Pour connaître la liste des alias disponible, il suffit de taper alias à l’invite du prompt
+
+$ alias
+alias grep='grep --colour=auto'
+alias ll='ls -al'
+alias ls='ls --color=auto'$ alias
+alias grep='grep --colour=auto'
+alias ll='ls -al'
+alias ls='ls --color=auto'
+Définition d’un alias sous zsh
+C’est pareil, sauf que oh-my-zsh en propose déjà une grande quantité (de grands classiques…​)
+
+$ alias
+-='cd -'
+...=../..
+....=../../..
+.....=../../../..
+......=../../../../..
+1='cd -'
+2='cd -2'
+3='cd -3'
+4='cd -4'
+5='cd -5'
+6='cd -6'
+7='cd -7'
+8='cd -8'
+....
+(sortie tronquée)
+
+Toutefois, ceux-là restent très utiles et peuvent être ajoutés au .zshrc
+
+lt() {
+    ls -lat $@|head
+}
+
+alias gst='git status --short -b'
+alias git-remove-merged-branches='git branch --no-color --merged | command grep -vE "^(\*|\s*(master|develop|dev)\s*$)" | command xargs -n 1 git branch -d'
+Le dernier est déjà fournit dans oh-my-zsh, mais sous un nom peu facile à retenir. Un alias sert aussi à donner un nom plus compréhensible à une commande.
+
+Les fonctions
+Les fonctions permettent d’avoir une gestion des paramètres plus complexe.
+
+Ex : Fonction pour lister les répertoires les plus volumineux par ordre croissant
+
+Ajoutez cette fonction dans votre .zshrc pour vous aider à faire le ménage dans votre répertoire personnel
+
+# allow to display files and directories ordered by size
+dush() {
+    du -sh $@ | sort -h
+}
+Les scripts shell
+Le chainage de commandes
+le pipe : |
+Le gros avantage de la ligne de commande est le chaînage. On peut passer le résultat d’une commande en entrée d’une autre, de manière à obtenir des opérations très puissante.
+
+On utilise pour cela le pipe (prononcé à l’anglaise "païpe"), qui veut dire tube : on envoie le résultat d’une commande en entrée d’une autre en les connectant avec un tube.
+
+Exemple : trouver en une ligne de commande toutes les adresses IP de mon poste. ip addr va me donner toutes les informations liées aux adresses de mon poste, dont les adresses mac, les adresses de broadcast, le nom technique de chaque interface, il peut être compliqué de chercher dans toutes ces informations. Mais je peux demander à grep de chercher directement ce qui m’intéresse, les adresses IP décrites par le mot inet.
+
+$ ip addr | grep inet
+    inet 127.0.0.1/8 scope host lo
+    inet6 ::1/128 scope host
+    inet 192.168.1.213/24 brd 192.168.1.255 scope global dynamic noprefixroute enp13s0u1
+    inet6 fe80::de28:a31:29e4:eb19/64 scope link noprefixroute
+    inet 192.168.5.96/23 brd 192.168.5.255 scope global dynamic noprefixroute wlp4s0
+    inet6 fe80::a0a1:d81b:87f0:d283/64 scope link noprefixroute
+> et >>
+Le chevron permet d'écrire (>) ou d’ajouter (>>) à un fichier le résultat d’une commande
+
+$ echo "Première ligne" > /tmp/test.txt
+$ echo "Deuxième ligne" >> /tmp/test.txt
+$ cat /tmp/test.txt
+Première ligne
+Deuxième lignes
+&& et ||
+&& permet de lancer une nouvelle commande si la précédente réussi
+
+|| permet de lancer une commande si la précédent échoue
+
+Ce sont le 'et' et le 'ou' que nous avons l’habitude de rencontrer en développement ou en algèbre de bool.
+Le shell est tout aussi "fainéant" qu’un langage de programmation et n'évalue la seconde opération que si le résultat de la première ne lui permet pas de conclure sur le résultat final.
+Dans le cas du || on compte sur le fait que la deuxième commande n’est jamais exécutée lorsque la précédente réussi.
+
+$ ll
+total 0
+
+$ test -f unfichier.txt && echo le fichier existe || echo fichier absent
+fichier absent
+
+$ touch unfichier.txt
+
+$ ll
+total 0
+-rw-r--r-- 1 eric eric 0 Jan 06 15:12 unfichier.txt
+
+$ test -f unfichier.txt && echo le fichier existe || echo fichier absent
+le fichier existe
+	Dans cet exemple echo fichier absent aurait pu être lancé si la commande echo le fichier existe avait échoué (ce qui est impossible dans ce cas)
+Utilitaires adaptés au chaînage
+Ces utilitaires permettent de manipuler des chaînes de caractère en ligne de commande Entre autres :
+
+grep pour chercher des chaines de caractère
+
+sort pour trier
+
+cut pour découper des chaines
+
+uniq pour dédoublener une liste triée (souvent utilisé après un sort du coup)
+
+tail pour avoir les dernières lignes d’un fichier (tail -f app.log permet de suivre un fihier de log au fur et à mesure qu’il se remplit)
+
+head pour avoir les premères lignes d’un fichier
+
+less pour afficher un résultat de manière paginée
+
+cat pour afficher le contenu entier d’un fichier
+
+wc pour compter des caractères ou des lignes
+
+jq pour afficher du json joliement
+
+Exemple : comment connaître le nombre total de users d’un système linux
+
+cat /etc/passwd | wc -l
+36
+Et le nombre d’utilisateurs systèmes (qui n’ont pas le droit de se loger):
+
+cat /etc/passwd | grep "nologin" | wc -l
+30
+Et pour les autre ?
+
+cat /etc/passwd | grep -v "nologin" | wc -l
+6
+Le '-v' inverse le fonctionnement de grep qui ne sort que les lignes qui n’ont pas la chaîne nologin
+
+Les commandes utiles
+Trouver des fichiers
+avec find : find . -iname "*.css" cherche tous les fichiers css dans l’arborescence du répertoire courant (.)
+
+avec locate : locate "*.css" cherche tous les fichiers css présents sur le système entier. Il faut parfois lancer sudo updatedb pour reconstruire l’index de recherche
+
+Chercher dans les contenus des fichiers
+avec grep : grep -R "main" * cherche de manière récursive (-R) le mot 'main' dans tous les fichiers (*)
+
+avec ag : ag "main" ag (package the_silver_search ou sur [github](https://github.com/ggreer/the_silver_searcher)) est plus inteligent et est particulièrement rapide. Il ne cherche que dans les fichiers sources d’un projet (en ometant les répertoire .git par example.
+
+Télécharger ou accéder à une API REST
+On utilise pour cela curl.
+
+Téléchargement :
+
+$ curl -O https://domain.com/file.zip
+Accès à des API (l’utilisation de jq permet une mie en forme plus agréable)
+
+$ curl -XGET ifconfig.co/json | jq .
+$ curl -i -H "Content-Type: application/json" -XPOST http://localhost:5000/api/v1/script -d '{"last_exec":"CURRENT_TIMESTAMP", "name": "test_curl.sh", "server": "'$HOST'", "status": 0}'
