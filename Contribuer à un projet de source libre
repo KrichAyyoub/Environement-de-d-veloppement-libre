@@ -1,0 +1,42 @@
+Contribuer à un projet
+Voici la procédure à adopter lorsque vous voulez contribuer à un projet pour lequel vous ne faites pas parti de l'équipe des mainteneurs officiels.
+
+Dans son navigateur WEB, se rendre sur la page du projet sur lequel ou souhaite contribuer sur gitlab.com ou github.com
+
+Forker le projet en cliquant sur le bouton Fork (il faut être authentifié pour effectuer cette action)
+
+Préparez un répertoire sur votre ordinateur pour recevoir les sources du projet. Exemple pour un projet hébergé sur gitlab.com en ligne de commande :
+
+moi@mamachine ~ $ mkdir -p Sources/gitlab.com/[mon-compte]
+moi@mamachine ~ $ cd Sources/gitlab.com/[mon-compte]
+moi@mamachine ~/Sources/gitlab.com/[mon-compte] $
+Remplacez [mon-compte] par votre compte gitlab
+
+Clonez le fork sur votre ordinateur en utilisant de préférence la méthode ssh. Cliquez sur le bouton Clone pour obtenir l’url du projet.
+Exemple :
+
+$ git clone git@gitlab.com:[mon-compte-gitlab]/[projet].git
+Allez dans le répertoire du projet et vérifiez que les tests unitaires passent.
+C’est une étape un importante : vous devez vous assurer que le projet fonctionne bien sur votre poste avant d’y apporter des modifications.
+
+Créer une branche en lui donnant un nom explicite en anglais :
+
+$ git checkout -b improve-detection-algorithm
+Modifiez le code source, ajoutez des fonctionnalités et/ou des tests unitaires et commitez votre travail en l’agrémantant d’un message intéressant.
+Règles pour rédiger un message de commit :
+
+A Note About Git Commit Messages
+
+5 Useful Tips For A Better Commit Message
+
+	N’utilisez JAMAIS les commandes git add . ou git commit -a. Ce sont les meilleurs moyens pour commiter n’importe quoi : des fichiers temporaires ou pire des fichiers contenant des informations sensibles comme des mots de passe ou des clefs d’API. Utilisez toujours git add ou git commit en nommant les fichiers : git add fic1.txt fic2.txt suivi de git commit
+Poussez votre branche dans votre dépot. Exemple pour la branche improve-detection-algorithm :
+
+$ git push --set-upstream origin improve-detection-algorithm
+Avec votre navigateur, créez une Merge Request (sur gitlab.com, le terme consacré sur github.com est Pull Request)
+
+Choisissez la branche que vous avez poussé sur votre dépot comme source.
+
+Choisissez la branche master du projet initial comme destination
+
+	Tant que le mainteneur du projet n’accepte pas votre Merge Request ou Pull Request, tout ce que vous pousserez sur votre branche sera automatiquement inclus. Pratique pour apporter les adaptations qu’un mainteneur pourrait vous demander.
